@@ -1,62 +1,45 @@
 import random
-import matplotlib.pyplot as plt
-import numpy as np
-from Sample import times
+import time
+from QuickSort import quickSort
+from MergeSort import mergeSort
+from InsertionSort import insertionSort
 
-def main(length):
-  # Create lists to store samples and sorting times for each algorithm
-  samples = []
-  t1=[]
-  t2=[]
-  t3=[]
+# Function to generate a random list of integers within a specified range
+def randomList(length, min, max):
+    return [random.randint(min,max) for _ in range(length)]
 
-  # Generate samples and measure sorting times for each algorithm
-  for i in range(100):
-      sorting_times = times(1, length)
-      samples.append(i)
-      t1.append(sorting_times[0])
-      t2.append(sorting_times[1])
-      t3.append(sorting_times[2])
-  
-  # Calculate the average sorting time for each algorithm
-  avg1 = np.mean(t1)
-  avg2 = np.mean(t2)
-  avg3 = np.mean(t3)
+# Function to measure the execution time of each sorting algorithm
+def times(min, max):
+    list1 = randomList(max,min,max)
+    size = len(list1)
+    alg_times =[]
+    
+    # Sort the list using Quick Sort and measure the execution time
+    list1_copy = list1.copy()
+    start_time = time.perf_counter()
+    quickSort(list1_copy, 0, size-1)
+    end_time = time.perf_counter()
+    t1 = 1000*end_time - 1000*start_time # Convert time to milliseconds
+    alg_times.append(t1)
+   
+    # Sort the list using Merge Sort and measure the execution time
+    list1_copy = list1.copy()
+    start_time = time.perf_counter()
+    mergeSort(list1_copy)
+    end_time = time.perf_counter()
+    t2 = 1000*end_time - 1000*start_time # Convert time to milliseconds
+    alg_times.append(t2)
+    
+    # Sort the list using Insertion Sort and measure the execution time
+    list1_copy = list1.copy()
+    start_time = time.perf_counter()
+    insertionSort(list1_copy)
+    end_time = time.perf_counter()
+    t3 = 1000*end_time - 1000*start_time # Convert time to milliseconds
+    alg_times.append(t3)
 
-  # Create figure and subplots
-  fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-  # Plotting the first scatter plot
-  axes[0].scatter(samples, t1)
-  axes[0].axhline(avg1, color='red', linestyle='--', label=f'Average: {avg1:.2f}')
-  axes[0].text(105, avg1, f'{avg1:.2f}', ha='left', va='center')
-  axes[0].set_title(f'Quick Sort\n List Length = {length}')
-  axes[0].set_xlabel('Samples')
-  axes[0].set_ylabel('Time (ms)')
-  axes[0].set_ylim([0, t3[0]/10])
+    # Return the list containing the execution times of each sorting algorithm
+    return alg_times
 
-  # Plotting the second scatter plot
-  axes[1].scatter(samples,t2)
-  axes[1].axhline(avg2, color='red', linestyle='--', label=f'Average: {avg2:.2f}')
-  axes[1].text(105, avg2, f'{avg2:.2f}', ha='left', va='center')
-  axes[1].set_title(f'Merge Sort\n List Length = {length}')
-  axes[1].set_xlabel('Samples')
-  axes[1].set_ylabel('Time (ms)')
-  axes[1].set_ylim([0, t3[0]/10])
-
-  # Plotting the third scatter plot
-  axes[2].scatter(samples, t3)
-  axes[2].axhline(avg3, color='red', linestyle='--', label=f'Average: {avg3:.2f}')
-  axes[2].text(105, avg3, f'{avg3:.2f}', ha='left', va='center')
-  axes[2].set_title(f'Insertion Sort\n List Length = {length}')
-  axes[2].set_xlabel('Samples')
-  axes[2].set_ylabel('Time (ms)')
-  axes[2].set_ylim([0, t3[0]*1.5])
-
-  # Adjust layout
-  plt.tight_layout()
-
-  # Show plots
-  plt.show()
-main(10000)
 
 
